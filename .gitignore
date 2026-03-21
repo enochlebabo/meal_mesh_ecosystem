@@ -1,0 +1,15 @@
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+**/build/
+.DS_Store
+.firebase/
+firebase-debug.log
+ios/Pods/
+**/.env
+.env
+**/.env

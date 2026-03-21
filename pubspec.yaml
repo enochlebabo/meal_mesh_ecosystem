@@ -1,0 +1,13 @@
+name: meal_mesh_ecosystem
+description: Meal Mesh Enterprise Monorepo
+version: 1.0.0
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+
+workspace:
+  - apps/meal_mesh_ios_user
+  - apps/meal_mesh_web_admin
+  - apps/meal_mesh_web_restaurant
+  - packages/shared_models
+  - packages/shared_ui

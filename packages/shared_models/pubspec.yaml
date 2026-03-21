@@ -1,0 +1,10 @@
+name: shared_models
+description: Core data models for Meal Mesh
+version: 1.0.0
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  cloud_firestore: ^5.0.0
+resolution: workspace

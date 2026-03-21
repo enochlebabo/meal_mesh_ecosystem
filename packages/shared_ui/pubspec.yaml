@@ -1,0 +1,9 @@
+name: shared_ui
+description: Shared buttons, themes, and layouts
+version: 1.0.0
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+resolution: workspace

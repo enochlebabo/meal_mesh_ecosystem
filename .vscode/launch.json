@@ -1,0 +1,54 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "meal_mesh_ios_user",
+            "cwd": "meal_mesh_ios_user",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "meal_mesh_ios_user (profile mode)",
+            "cwd": "meal_mesh_ios_user",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "meal_mesh_ios_user (release mode)",
+            "cwd": "meal_mesh_ios_user",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "meal_mesh_web_admin",
+            "cwd": "meal_mesh_web_admin",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "meal_mesh_web_restaurant",
+            "cwd": "meal_mesh_web_restaurant",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "meal_mesh_web_restaurant (profile mode)",
+            "cwd": "meal_mesh_web_restaurant",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "meal_mesh_web_restaurant (release mode)",
+            "cwd": "meal_mesh_web_restaurant",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
