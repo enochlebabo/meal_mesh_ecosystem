@@ -1,0 +1,154 @@
+{
+  "project_info": {
+    "project_number": "407409670855",
+    "project_id": "meal-mesh-dbase",
+    "storage_bucket": "meal-mesh-dbase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407409670855:android:c3528d5f263ce3eebb5ce2",
+        "android_client_info": {
+          "package_name": "com.example.meal_mesh_driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407409670855-o0oc7aalu0qoqnbld2oet8c1b5q68fi0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnhYv0bvr1Fw7LR_i88i6Ij2I9pRqw35E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407409670855-o0oc7aalu0qoqnbld2oet8c1b5q68fi0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "407409670855-0e5s3vbarjj0a00579j7diitchm3jc1b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mealMeshRestaurant"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407409670855:android:e82190c6d453f41bbb5ce2",
+        "android_client_info": {
+          "package_name": "com.example.meal_mesh_ios_driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407409670855-o0oc7aalu0qoqnbld2oet8c1b5q68fi0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnhYv0bvr1Fw7LR_i88i6Ij2I9pRqw35E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407409670855-o0oc7aalu0qoqnbld2oet8c1b5q68fi0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "407409670855-0e5s3vbarjj0a00579j7diitchm3jc1b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mealMeshRestaurant"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407409670855:android:e0dca14f8c605bc1bb5ce2",
+        "android_client_info": {
+          "package_name": "com.example.meal_mesh_restaurant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407409670855-o0oc7aalu0qoqnbld2oet8c1b5q68fi0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnhYv0bvr1Fw7LR_i88i6Ij2I9pRqw35E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407409670855-o0oc7aalu0qoqnbld2oet8c1b5q68fi0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "407409670855-0e5s3vbarjj0a00579j7diitchm3jc1b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mealMeshRestaurant"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407409670855:android:ecb095f188fbbdbdbb5ce2",
+        "android_client_info": {
+          "package_name": "com.example.meal_mesh_user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407409670855-o0oc7aalu0qoqnbld2oet8c1b5q68fi0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnhYv0bvr1Fw7LR_i88i6Ij2I9pRqw35E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407409670855-o0oc7aalu0qoqnbld2oet8c1b5q68fi0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "407409670855-0e5s3vbarjj0a00579j7diitchm3jc1b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mealMeshRestaurant"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

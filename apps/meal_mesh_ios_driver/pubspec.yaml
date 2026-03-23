@@ -43,6 +43,8 @@ dependencies:
   flutter_dotenv: ^6.0.0
   shared_ui:
     path: ../../packages/shared_ui
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ^7.0.1
 
 dev_dependencies:
   flutter_test:
