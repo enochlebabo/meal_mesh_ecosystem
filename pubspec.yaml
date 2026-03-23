@@ -9,5 +9,6 @@ workspace:
   - apps/meal_mesh_ios_user
   - apps/meal_mesh_web_admin
   - apps/meal_mesh_web_restaurant
+  - apps/meal_mesh_ios_driver
   - packages/shared_models
   - packages/shared_ui
