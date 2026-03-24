@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>407409670855-3eek16dmh9mlqcaqt3s2nmh4p45lcq4s.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.407409670855-3eek16dmh9mlqcaqt3s2nmh4p45lcq4s</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBy882FVHTE_c1UUkYGyJ27Ei0TJZrNnzY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>407409670855</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.mealMeshDriver</string>
+	<key>PROJECT_ID</key>
+	<string>meal-mesh-dbase</string>
+	<key>STORAGE_BUCKET</key>
+	<string>meal-mesh-dbase.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:407409670855:ios:347b9b942f5b28dabb5ce2</string>
+</dict>
+</plist>

@@ -8,6 +8,8 @@ class DriverLoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = DriverAuthService.to;
+    final emailC = TextEditingController(text: "driver@test.com");
+    final passC = TextEditingController(text: "password123");
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -20,48 +22,30 @@ class DriverLoginView extends StatelessWidget {
             children: [
               const Icon(Icons.delivery_dining, size: 100, color: Colors.green),
               const SizedBox(height: 24),
-              const Text(
-                "MealMesh Driver",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                "Earn on your schedule.\nSign in to view your live orders.",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
+              const Text("MealMesh Driver", textAlign: TextAlign.center, style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
               const SizedBox(height: 48),
 
-              // APPLE LOGIN BUTTON
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 2,
-                ),
-                icon: const Icon(Icons.apple, size: 24),
-                label: const Text("Continue with Apple", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                onPressed: () => auth.signInWithApple(),
+              TextField(
+                controller: emailC,
+                decoration: InputDecoration(labelText: "Email", filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
               ),
               const SizedBox(height: 16),
-
-              // GOOGLE LOGIN BUTTON
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black87,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 2,
-                ),
-                // Using a standard flutter icon for speed, normally you'd use a Google logo asset
-                icon: const Icon(Icons.g_mobiledata, size: 32, color: Colors.red), 
-                label: const Text("Continue with Google", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                onPressed: () => auth.signInWithGoogle(),
+              TextField(
+                controller: passC,
+                obscureText: true,
+                decoration: InputDecoration(labelText: "Password", filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
               ),
+              const SizedBox(height: 24),
+
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green, padding: const EdgeInsets.symmetric(vertical: 16)),
+                onPressed: () => auth.signInWithEmail(emailC.text, passC.text),
+                child: const Text("LOGIN", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
+              TextButton(
+                onPressed: () => auth.registerDriver(emailC.text, passC.text, "New Driver"),
+                child: const Text("Register as New Driver", style: TextStyle(color: Colors.green)),
+              )
             ],
           ),
         ),
