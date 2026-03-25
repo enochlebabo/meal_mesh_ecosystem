@@ -46,7 +46,6 @@ class DriverAuthService extends GetxService {
     }
   }
 
-  // --- STANDARD EMAIL REGISTER (Auto-creates pending profile) ---
   Future<void> registerDriver(String email, String password, String name) async {
     try {
       UserCredential cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);

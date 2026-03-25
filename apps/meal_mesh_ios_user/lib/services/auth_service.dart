@@ -98,22 +98,20 @@ class AuthService extends GetxService {
         });
       }
     } catch (e) {
-      // THE FIX: Silently ignore if the user cancels the popup
       if (e.toString().contains('canceled')) {
         return; 
       }
-      
-      Get.snackbar(
-        "Google Login Failed", 
-        e.toString(), 
-        backgroundColor: Colors.redAccent, 
-        colorText: Colors.white
-      );
+      Get.snackbar("Google Login Failed", e.toString(), backgroundColor: Colors.redAccent, colorText: Colors.white);
     }
   }
 
   Future<void> logout() async {
-    await GoogleSignIn.instance.signOut();
-    await _auth.signOut();
+    try {
+      // THE FIX: Accessing the instance correctly for release compilation
+      await GoogleSignIn.instance.signOut();
+      await _auth.signOut();
+    } catch (e) {
+      Get.snackbar("Sign Out Error", e.toString());
+    }
   }
 }
