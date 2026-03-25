@@ -43,11 +43,11 @@ class _AdminLoginViewState extends State<AdminLoginView> {
                 const SizedBox(height: 32),
                 SizedBox(
                   width: double.infinity,
-                  height: 50,
+                  height: 55,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
                     onPressed: isLoading ? null : handleLogin,
-                    child: isLoading ? const CircularProgressIndicator(color: Colors.white) : const Text("SECURE LOGIN", style: TextStyle(color: Colors.white)),
+                    child: isLoading ? const CircularProgressIndicator(color: Colors.red ) : const Text("SECURE LOGIN", style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
