@@ -1,70 +1,47 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
-import '../views/driver_login_view.dart';
-import '../views/driver_dashboard_view.dart';
-import '../views/driver_pending_view.dart';
+import 'package:flutter/material.dart';
 
-class DriverAuthService extends GetxService {
-  static DriverAuthService get to => Get.find();
+class DriverAuthService extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final Rx<User?> currentUser = Rx<User?>(null);
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  Rxn<User> user = Rxn<User>();
 
   @override
-  void onReady() {
-    super.onReady();
-    currentUser.bindStream(_auth.authStateChanges());
-    ever(currentUser, _handleAuthChanged);
+  void onInit() {
+    super.onInit();
+    user.bindStream(_auth.authStateChanges());
   }
 
-  void _handleAuthChanged(User? user) async {
-    if (user == null) {
-      Get.offAll(() => const DriverLoginView());
-    } else {
-      _db.collection('drivers').doc(user.uid).snapshots().listen((doc) {
-        if (doc.exists) {
-          bool isApproved = doc['isApproved'] ?? false;
-          if (isApproved) {
-            Get.offAll(() => const DriverDashboardView());
-          } else {
-            Get.offAll(() => const DriverPendingView());
-          }
-        } else {
-          Get.offAll(() => const DriverPendingView());
-        }
-      });
-    }
-  }
-
-  // --- STANDARD EMAIL LOGIN ---
-  Future<void> signInWithEmail(String email, String password) async {
+  Future<void> signInWithGoogle() async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      UserCredential userCred = await _auth.signInWithCredential(credential);
+      DocumentSnapshot driverDoc = await _db.collection('drivers').doc(userCred.user!.uid).get();
+      if (!driverDoc.exists) {
+        Get.offAllNamed('/signup-details');
+      } else if (!(driverDoc.get('isApproved') ?? false)) {
+        await logout();
+        Get.snackbar("Pending", "Admin approval required.", backgroundColor: Colors.orange, colorText: Colors.white);
+      }
     } catch (e) {
-      Get.snackbar("Login Failed", e.toString());
-    }
-  }
-
-  Future<void> registerDriver(String email, String password, String name) async {
-    try {
-      UserCredential cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      
-      await _db.collection('drivers').doc(cred.user!.uid).set({
-        'name': name,
-        'email': email,
-        'vehicle': 'Pending Details',
-        'isApproved': false, // Restricts access to orders
-        'isOnline': false,
-        'currentLocation': const GeoPoint(0, 0),
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-    } catch (e) {
-      Get.snackbar("Registration Failed", e.toString());
+      Get.snackbar("Auth Error", "Login Failed: $e");
     }
   }
 
   Future<void> logout() async {
+    await _googleSignIn.signOut();
     await _auth.signOut();
+    Get.offAllNamed('/login');
   }
 }

@@ -50,8 +50,7 @@ This repository is organized as a monorepo containing multiple Flutter applicati
 
 3.  **Native Configuration**:
     *   Place your `GoogleService-Info.plist` in the `ios/Runner` folders of the mobile apps via Xcode.
-    *   Ensure your Google Maps API key is initialized in `AppDelegate.swift`.
-
+    *   Ensure your Google Maps API key is initialized in the .env file
 ---
 
 ## 💡 Troubleshooting Build Issues

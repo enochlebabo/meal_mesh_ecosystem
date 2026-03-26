@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'services/auth_service.dart';
 import 'routes/app_routes.dart'; 
+import 'bindings/initial_binding.dart'; // Add this import
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  Get.put(AuthService());
+  // Note: We removed Get.put(AuthService()) here because 
+  // it is now handled cleanly inside InitialBinding().
   runApp(const MealMeshUserApp());
 }
 
@@ -25,8 +26,11 @@ class MealMeshUserApp extends StatelessWidget {
         return GetMaterialApp(
           title: 'MealMesh User',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(primarySwatch: Colors.orange),
-          // THIS IS KEY: It MUST point to the HOME name, which we just mapped to the Wrapper
+          theme: ThemeData(
+            primarySwatch: Colors.orange,
+            useMaterial3: true, // Modern Flutter standard
+          ),
+          initialBinding: InitialBinding(), // THIS IS THE FIX
           initialRoute: AppRoutes.LOGIN, 
           getPages: AppRoutes.pages, 
         );

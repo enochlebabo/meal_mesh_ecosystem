@@ -1,29 +1,35 @@
-import 'package:flutter/material.dart'; // THE MISSING LINK
 import 'package:get/get.dart';
 
-class CartController extends GetxController {
-  static CartController get to => Get.find();
-  
-  // Map of Item ID to Quantity
-  final RxMap<String, int> cartItems = <String, int>{}.obs;
+class CartItem {
+  final String id;
+  final String name;
+  final double price;
+  int quantity;
 
-  void addToCart(String itemId) {
-    if (cartItems.containsKey(itemId)) {
-      cartItems[itemId] = cartItems[itemId]! + 1;
+  CartItem({required this.id, required this.name, required this.price, this.quantity = 1});
+}
+
+class CartController extends GetxController {
+  var cartItems = <String, CartItem>{}.obs;
+
+  void addToCart(String id, String name, double price) {
+    if (cartItems.containsKey(id)) {
+      cartItems[id]!.quantity += 1;
     } else {
-      cartItems[itemId] = 1;
+      cartItems[id] = CartItem(id: id, name: name, price: price);
     }
-    
-    // Now Colors.green and Colors.white will be recognized
-    Get.snackbar(
-      "Added to Cart", 
-      "$itemId added to your order", 
+    cartItems.refresh();
+    Get.snackbar("Added to Cart", "$name added to your tray", 
       snackPosition: SnackPosition.BOTTOM, 
-      backgroundColor: Colors.green, 
-      colorText: Colors.white,
-      duration: const Duration(seconds: 1),
-    );
+      backgroundColor: Colors.green.withOpacity(0.1),
+      duration: const Duration(seconds: 1));
   }
 
-  int get totalItems => cartItems.values.fold(0, (sum, item) => sum + item);
+  // Displaying Total in Rupees
+  String get totalAmountString => "₹${totalAmount.toStringAsFixed(2)}";
+  
+  double get totalAmount => cartItems.values
+      .fold(0, (sum, item) => sum + (item.price * item.quantity));
+
+  int get itemCount => cartItems.length;
 }

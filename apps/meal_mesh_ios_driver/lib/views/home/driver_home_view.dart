@@ -1,75 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:get/get.dart';
-import '../../controllers/job_controller.dart';
+import '../../controllers/driver_data_controller.dart';
 
 class DriverHomeView extends StatelessWidget {
   const DriverHomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final jobC = Get.put(JobController());
+    final dataC = Get.find<DriverDataController>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E), // Professional Dark Mode
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text("Radar: Live Jobs", style: TextStyle(color: Colors.white)),
-        actions: [
-          Switch(value: true, activeColor: Colors.green, onChanged: (v) {})
+      body: Stack(
+        children: [
+          // Reactive Map: Moves camera to current driver position
+          Obx(() => GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(
+                dataC.currentPosition.value?.latitude ?? 22.5726, 
+                dataC.currentPosition.value?.longitude ?? 72.9289
+              ), 
+              zoom: 15
+            ),
+            myLocationEnabled: true,
+            mapType: MapType.normal,
+          )),
+
+          Positioned(
+            bottom: 20, left: 10, right: 10,
+            child: Obx(() {
+              if (dataC.availableOrders.isEmpty) {
+                return Container(
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(color: Colors.black.withOpacity(0.8), borderRadius: BorderRadius.circular(10)),
+                  child: const Text("Searching for orders...", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+                );
+              }
+
+              return SizedBox(
+                height: 180,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: dataC.availableOrders.length,
+                  itemBuilder: (context, index) {
+                    var order = dataC.availableOrders[index];
+                    var orderData = order.data() as Map<String, dynamic>;
+                    
+                    // Dynamic Distance Calculation
+                    double dist = dataC.calculateDistance(
+                      orderData['restaurantLat'] ?? 0.0, 
+                      orderData['restaurantLng'] ?? 0.0
+                    );
+
+                    return Card(
+                      color: const Color(0xFF1E1E1E),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      child: Container(
+                        width: 320,
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(orderData['restaurantName'] ?? 'Food Pickup', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                                Text("${dist.toStringAsFixed(1)} km", style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                            const Divider(color: Colors.white12),
+                            Text("Dropoff: ${orderData['deliveryAddress'] ?? 'Nearby'}", style: const TextStyle(color: Colors.grey)),
+                            const Spacer(),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(backgroundColor: Colors.greenAccent, minimumSize: const Size(double.infinity, 45)),
+                              onPressed: () => dataC.acceptOrder(order.id),
+                              child: const Text("ACCEPT ORDER", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }),
+          ),
         ],
       ),
-      body: Obx(() {
-        if (jobC.availableJobs.isEmpty) {
-          return const Center(
-            child: Text("Waiting for orders...", style: TextStyle(color: Colors.grey, fontSize: 18)),
-          );
-        }
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: jobC.availableJobs.length,
-          itemBuilder: (context, index) {
-            var doc = jobC.availableJobs[index];
-            var data = doc.data() as Map<String, dynamic>;
-
-            return Card(
-              color: const Color(0xFF2C2C2C),
-              margin: const EdgeInsets.only(bottom: 16),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("💰 New Delivery", style: TextStyle(color: Colors.greenAccent.shade400, fontWeight: FontWeight.bold)),
-                    const Divider(color: Colors.grey),
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.store, color: Colors.orange),
-                      title: Text(data['restaurantName'] ?? 'Unknown', style: const TextStyle(color: Colors.white)),
-                      subtitle: const Text("Pickup", style: TextStyle(color: Colors.grey)),
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.location_on, color: Colors.red),
-                      title: Text(data['customerAddress'] ?? 'No Address', style: const TextStyle(color: Colors.white)),
-                      subtitle: const Text("Dropoff", style: TextStyle(color: Colors.grey)),
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                        onPressed: () => jobC.acceptJob(doc.id, data),
-                        child: const Text("ACCEPT JOB", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      }),
     );
   }
 }

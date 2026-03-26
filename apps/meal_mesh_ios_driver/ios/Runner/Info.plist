@@ -33,6 +33,16 @@
 			<array>
 				<string>com.googleusercontent.apps.407409670855-3eek16dmh9mlqcaqt3s2nmh4p45lcq4s</string>
 			</array>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>MealMesh needs your location to show nearby delivery requests.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>MealMesh needs location access to track deliveries in the background.</string>
+
+<key>LSApplicationQueriesSchemes</key>
+<array>
+<string>googlemaps</string>
+<string>comgooglemaps</string>
+</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
@@ -62,5 +72,15 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>MealMesh needs your location to show nearby delivery requests.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>MealMesh needs location access to track deliveries in the background.</string>
+
+<key>LSApplicationQueriesSchemes</key>
+<array>
+<string>googlemaps</string>
+<string>comgooglemaps</string>
+</array>
 </dict>
 </plist>
