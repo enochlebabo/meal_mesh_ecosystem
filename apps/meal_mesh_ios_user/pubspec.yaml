@@ -45,6 +45,8 @@ dependencies:
   firebase_data_connect: ^0.2.3
   google_maps_flutter: ^2.14.2
   geocoding: ^4.0.0
+  permission_handler: ^11.3.1
+  ar_flutter_plugin_updated: ^0.0.1
 
 dev_dependencies:
   flutter_test:

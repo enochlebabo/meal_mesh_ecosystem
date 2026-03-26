@@ -20,34 +20,43 @@ class RestaurantMenuView extends StatelessWidget {
     final controller = Get.find<RestaurantController>();
     final cartController = Get.find<CartController>();
 
-    // Professional Trigger: Fetch menu immediately on build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchRestaurantMenu(restaurantId);
     });
 
     return Scaffold(
-      appBar: AppBar(title: Text(restaurantName)),
+      appBar: AppBar(title: Text(restaurantName), centerTitle: true),
       body: Obx(() {
         if (controller.isMenuLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: Colors.orange));
         }
-        if (controller.menuItems.isEmpty) {
-          return const Center(child: Text("No items found in menu."));
-        }
-
         return ListView.builder(
           itemCount: controller.menuItems.length,
           itemBuilder: (context, index) {
-            var item = controller.menuItems[index].data() as Map<String, dynamic>;
-            return ListTile(
-              title: Text(item['name'] ?? 'Item'),
-              subtitle: Text("R₹{item['price']}"),
-              trailing: IconButton(
-                icon: const Icon(Icons.add_shopping_cart),
-                onPressed: () {
-                  // Connect to your CartController logic here
-                  cartController.addToCart(controller.menuItems[index].id, item["name"] ?? "Item", (item["price"] ?? 0).toDouble());
-                },
+            final item = controller.menuItems[index];
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(10),
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(item.image, width: 60, height: 60, fit: BoxFit.cover, 
+                    errorBuilder: (ctx, err, stack) => const Icon(Icons.fastfood, size: 40)),
+                ),
+                title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.description, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: 4),
+                    Text("₹${item.price}", style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.add_circle, color: Colors.orange, size: 30),
+                  onPressed: () => cartController.addToCart(item.id, item.name, item.price),
+                ),
               ),
             );
           },

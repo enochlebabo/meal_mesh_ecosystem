@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import '../models/menu_item_model.dart';
 
 class RestaurantController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   
   RxList<DocumentSnapshot> restaurants = <DocumentSnapshot>[].obs;
-  RxList<DocumentSnapshot> menuItems = <DocumentSnapshot>[].obs;
+  RxList<MenuItem> menuItems = <MenuItem>[].obs; // Using the model now
   RxBool isLoading = true.obs;
   RxBool isMenuLoading = false.obs;
 
@@ -34,7 +35,9 @@ class RestaurantController extends GetxController {
         .collection('menu')
         .snapshots()
         .listen((snapshot) {
-      menuItems.value = snapshot.docs;
+      menuItems.value = snapshot.docs
+          .map((doc) => MenuItem.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
+          .toList();
       isMenuLoading.value = false;
     });
   }

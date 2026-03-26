@@ -9,11 +9,12 @@ class OrdersView extends StatelessWidget {
       appBar: AppBar(title: const Text("My Orders"), centerTitle: true),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainManager.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.history, size: 80, color: Colors.grey[400]),
             const SizedBox(height: 16),
-            const Text("No active orders found", style: TextStyle(fontSize: 18, color: Colors.grey)),
+            const Text("No active orders found", 
+              style: TextStyle(fontSize: 18, color: Colors.grey)),
           ],
         ),
       ),

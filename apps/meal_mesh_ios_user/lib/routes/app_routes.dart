@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import '../views/home/home_view.dart';
 import '../views/restaurant_menu_view.dart';
 import '../views/auth/login_view.dart';
-import '../views/main_nav_wrapper.dart'; // THE MISSING IMPORT
+import '../views/main_nav_wrapper.dart';
 import '../controllers/cart_controller.dart';
 import '../controllers/restaurant_controller.dart';
 
@@ -13,7 +13,14 @@ class AppRoutes {
 
   static final pages = [
     GetPage(name: LOGIN, page: () => const LoginView()),
-    GetPage(name: HOME, page: () => const MainNavWrapper()),
+    GetPage(
+      name: HOME, 
+      page: () => const MainNavWrapper(),
+      binding: BindingsBuilder(() {
+        Get.put(RestaurantController());
+        Get.put(CartController());
+      }),
+    ),
     GetPage(
       name: RESTAURANT_MENU, 
       page: () => RestaurantMenuView(
@@ -21,9 +28,10 @@ class AppRoutes {
         restaurantName: Get.arguments?['name'] ?? 'Menu',
         restaurantImage: Get.arguments?['image'] ?? '',
       ),
+      // We keep these here as fallback or for specialized menu logic
       binding: BindingsBuilder(() {
-        Get.lazyPut(() => CartController());
-        Get.lazyPut(() => RestaurantController());
+        if (!Get.isRegistered<CartController>()) Get.lazyPut(() => CartController());
+        if (!Get.isRegistered<RestaurantController>()) Get.lazyPut(() => RestaurantController());
       }),
     ),
   ];

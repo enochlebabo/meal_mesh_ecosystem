@@ -13,7 +13,6 @@ class HomeView extends GetView<RestaurantController> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // 1. App Bar with Location/Search
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -47,8 +46,6 @@ class HomeView extends GetView<RestaurantController> {
                 ),
               ),
             ),
-
-            // 2. Categories Section
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 100,
@@ -56,28 +53,33 @@ class HomeView extends GetView<RestaurantController> {
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.only(left: 20),
                   children: [
-                    _buildCategoryItem("Burgers", "🍔"),
-                    _buildCategoryItem("Pizza", "🍕"),
-                    _buildCategoryItem("Biryani", "🍲"),
-                    _buildCategoryItem("Drinks", "🥤"),
-                    _buildCategoryItem("Deserts", "🍰"),
+                    _buildCategoryItem("Burgers", ""),
+                    _buildCategoryItem("Pizza", ""),
+                    _buildCategoryItem("Biryani", ""),
+                    _buildCategoryItem("Drinks", ""),
+                    _buildCategoryItem("Deserts", ""),
                   ],
                 ),
               ),
             ),
-
-            // 3. Section Title
             const SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
                 child: Text("Popular Restaurants", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               ),
             ),
-
-            // 4. Restaurant List
             Obx(() {
               if (controller.isLoading.value) {
-                return const SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: Colors.orange)));
+                // FIX: Wrapped in SliverFillRemaining
+                return const SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator(color: Colors.orange)),
+                );
+              }
+              if (controller.restaurants.isEmpty) {
+                // FIX: Wrapped in SliverFillRemaining
+                return const SliverFillRemaining(
+                  child: Center(child: Text("No restaurants found.")),
+                );
               }
               return SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -89,7 +91,6 @@ class HomeView extends GetView<RestaurantController> {
                       name: data['name'] ?? 'Unnamed',
                       address: data['address'] ?? 'Unknown location',
                       image: data['image'] ?? '',
-                      rating: data['rating']?.toString() ?? '4.5',
                     );
                   },
                   childCount: controller.restaurants.length,
