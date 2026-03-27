@@ -21,21 +21,47 @@ class DriverAuthService extends GetxController {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) return;
+
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+
       UserCredential userCred = await _auth.signInWithCredential(credential);
-      DocumentSnapshot driverDoc = await _db.collection('drivers').doc(userCred.user!.uid).get();
+      String uid = userCred.user!.uid;
+
+      // Sync Check: Match fields from your Firestore screenshot
+      DocumentSnapshot driverDoc = await _db.collection('drivers').doc(uid).get();
+      
       if (!driverDoc.exists) {
+        // Create initial record matching your DB structure
+        await _db.collection('drivers').doc(uid).set({
+          'uid': uid,
+          'email': userCred.user!.email,
+          'name': userCred.user!.displayName ?? "",
+          'isApproved': false, 
+          'isOnline': false,
+          'address': "",
+          'phone': "",
+          'vehicle': "",
+          'currentLocation': const GeoPoint(22.556, 72.951), // Default from your screenshot
+          'createdAt': FieldValue.serverTimestamp(),
+        });
         Get.offAllNamed('/signup-details');
-      } else if (!(driverDoc.get('isApproved') ?? false)) {
-        await logout();
-        Get.snackbar("Pending", "Admin approval required.", backgroundColor: Colors.orange, colorText: Colors.white);
+      } else {
+        bool isApproved = driverDoc.get('isApproved') ?? false;
+        if (!isApproved) {
+          await logout();
+          Get.snackbar("Pending", "Admin approval required.", 
+            backgroundColor: Colors.orange, colorText: Colors.white);
+        } else {
+          Get.offAllNamed('/home');
+        }
       }
     } catch (e) {
-      Get.snackbar("Auth Error", "Login Failed: $e");
+      Get.snackbar("Auth Error", "Check console for details");
+      debugPrint("Auth Error: $e");
     }
   }
 

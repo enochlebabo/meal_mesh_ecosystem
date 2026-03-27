@@ -20,8 +20,14 @@ class DriverDataController extends GetxController {
   }
 
   void _initTracking() async {
-    await Geolocator.requestPermission();
-    Geolocator.getPositionStream().listen((pos) {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    
+    Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10)
+    ).listen((pos) {
       currentPosition.value = pos;
       if (currentUid != null) {
         _db.collection('drivers').doc(currentUid).update({
@@ -38,15 +44,32 @@ class DriverDataController extends GetxController {
       .snapshots().map((s) => s.docs));
   }
 
+  // RESTORED METHOD: Fixes the UI Build Error
+  double calculateDistance(double destLat, double destLng) {
+    if (currentPosition.value == null) return 0.0;
+    double distanceInMeters = Geolocator.distanceBetween(
+      currentPosition.value!.latitude,
+      currentPosition.value!.longitude,
+      destLat,
+      destLng,
+    );
+    return distanceInMeters / 1000; // Convert to KM
+  }
+
   void launchMap(double lat, double lng, String label) {
     MapsLauncher.launchCoordinates(lat, lng, label);
   }
 
   Future<void> acceptOrder(String id) async {
-    await _db.collection('orders').doc(id).update({
-      'status': 'accepted',
-      'driverId': currentUid,
-    });
-    Get.snackbar("Order Claimed", "Navigate to restaurant", backgroundColor: Colors.green, colorText: Colors.white);
+    if (currentUid == null) return;
+    try {
+      await _db.collection('orders').doc(id).update({
+        'status': 'accepted',
+        'driverId': currentUid,
+      });
+      Get.snackbar("Success", "Order Claimed!", backgroundColor: Colors.green, colorText: Colors.white);
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    }
   }
 }

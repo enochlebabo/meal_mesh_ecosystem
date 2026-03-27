@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 class SignupDetailsView extends StatelessWidget {
   SignupDetailsView({super.key});
 
-  final _formKey = GlobalKey<FormState>();
   final nameC = TextEditingController();
   final vehicleC = TextEditingController();
   final addressC = TextEditingController();
@@ -16,80 +15,49 @@ class SignupDetailsView extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    await FirebaseFirestore.instance.collection('drivers').doc(user.uid).set({
-      'uid': user.uid,
-      'email': user.email,
+    // Syncing exactly with your Firestore screenshot fields
+    await FirebaseFirestore.instance.collection('drivers').doc(user.uid).update({
       'name': nameC.text,
+      'phone': phoneC.text,
       'vehicle': vehicleC.text,
       'address': addressC.text,
-      'phone': phoneC.text,
-      'isApproved': false, // Crucial: Admin must manually flip this
-      'isOnline': false,
-      'createdAt': FieldValue.serverTimestamp(),
+      'isOnline': true, // Setting online as per your DB example
     });
 
-    Get.defaultDialog(
-      title: "Success",
-      middleText: "Your details have been submitted. Please wait for admin approval.",
-      onConfirm: () {
-        FirebaseAuth.instance.signOut();
-        Get.offAllNamed('/login');
-      },
-      textConfirm: "OK",
-    );
+    Get.snackbar("Submitted", "Wait for admin to flip isApproved to true",
+      snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+    
+    await FirebaseAuth.instance.signOut();
+    Get.offAllNamed('/login');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(title: const Text("Complete Your Profile"), backgroundColor: Colors.black),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              const Text("Welcome to the Fleet!", style: TextStyle(color: Colors.greenAccent, fontSize: 24, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
-              const Text("Fill in your details to join MealMesh.", style: TextStyle(color: Colors.grey)),
-              const SizedBox(height: 30),
-              _buildField(nameC, "Full Name", Icons.person),
-              _buildField(phoneC, "Phone Number", Icons.phone),
-              _buildField(vehicleC, "Vehicle Type (e.g. Pulsar NS 200)", Icons.motorcycle),
-              _buildField(addressC, "Residential Address", Icons.home),
-              const SizedBox(height: 40),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.greenAccent,
-                  foregroundColor: Colors.black,
-                  minimumSize: const Size(double.infinity, 55),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
-                ),
-                onPressed: _submitDetails,
-                child: const Text("SUBMIT FOR REVIEW", style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-            ],
-          ),
-        ),
+      appBar: AppBar(title: const Text("Profile Sync"), backgroundColor: Colors.black),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          _input(nameC, "Name", Icons.person),
+          _input(phoneC, "Phone", Icons.phone),
+          _input(vehicleC, "Vehicle (e.g. pulsar ns 200)", Icons.motorcycle),
+          _input(addressC, "Address", Icons.map),
+          const SizedBox(height: 30),
+          ElevatedButton(
+            onPressed: _submitDetails,
+            child: const Text("SYNC TO DATABASE"),
+          )
+        ],
       ),
     );
   }
 
-  Widget _buildField(TextEditingController controller, String label, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
-      child: TextFormField(
-        controller: controller,
-        style: const TextStyle(color: Colors.white),
-        decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.greenAccent),
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.grey),
-          enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.white24), borderRadius: BorderRadius.circular(12)),
-          focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.greenAccent), borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
+  Widget _input(TextEditingController c, String l, IconData i) {
+    return TextField(
+      controller: c,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(labelText: l, prefixIcon: Icon(i, color: Colors.greenAccent)),
     );
   }
 }

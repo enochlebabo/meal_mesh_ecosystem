@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'firebase_options.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'services/driver_auth_service.dart';
+import 'firebase_options.dart';
+import 'views/auth/login_view.dart';
+import 'views/home/driver_home_view.dart';
 import 'views/auth/signup_details_view.dart';
-import 'views/home/main_navigation_wrapper.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await dotenv.load(fileName: ".env");
-
+  
+  // 1. Environment Init
+  try { 
+    await dotenv.load(fileName: ".env"); 
+  } catch (e) { 
+    debugPrint("Build Warning: No .env found. Using native config."); 
+  }
+  
+  // 2. Firebase Init
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  ); 
+  
+  // 3. Service Injection
   Get.put(DriverAuthService());
 
   runApp(const MealMeshDriverApp());
@@ -26,61 +37,51 @@ class MealMeshDriverApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'MealMesh Driver',
       debugShowCheckedModeBanner: false,
-      // Define Routes here
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.greenAccent,
+        scaffoldBackgroundColor: Colors.black,
+      ),
+      // Use the logic-driven Gate as the starting point
+      home: const AuthGate(),
       getPages: [
         GetPage(name: '/login', page: () => const LoginView()),
         GetPage(name: '/signup-details', page: () => SignupDetailsView()),
-        GetPage(name: '/home', page: () => const MainNavigationWrapper()),
+        GetPage(name: '/home', page: () => const DriverHomeView()),
       ],
-      home: const AuthGate(),
     );
   }
 }
 
-class AuthGate extends StatelessWidget {
+/// Decision Engine: Watches the user stream and decides where to route them
+class AuthGate extends GetView<DriverAuthService> {
   const AuthGate({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return const LoginView();
-        return const MainNavigationWrapper();
-      },
-    );
-  }
-}
+    return Obx(() {
+      final user = controller.user.value;
 
-class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+      // Case 1: Not logged in
+      if (user == null) {
+        return const LoginView();
+      }
 
-  @override
-  Widget build(BuildContext context) {
-    final authS = Get.find<DriverAuthService>();
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.delivery_dining, size: 100, color: Colors.greenAccent),
-            const SizedBox(height: 20),
-            const Text("MEALMESH DRIVER", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 2)),
-            const SizedBox(height: 40),
-            ElevatedButton.icon(
-              onPressed: () => authS.signInWithGoogle(),
-              icon: const Icon(Icons.login),
-              label: const Text("Login with Google"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white, 
-                foregroundColor: Colors.black,
-                minimumSize: const Size(250, 50)
-              ),
-            ),
-          ],
+      // Case 2: Logged in - The AuthService handles the redirection 
+      // to /signup-details or /home based on Firestore approval status.
+      // While checking, we show a professional loader.
+      return const Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: Colors.greenAccent),
+              SizedBox(height: 20),
+              Text("Syncing Fleet Data...", style: TextStyle(color: Colors.white70)),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
